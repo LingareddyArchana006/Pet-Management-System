@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Shop Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #87CEEB, #FFFFFF);
+            margin: 0;
+            padding: 0;
+            animation: background-pan 10s infinite alternate linear;
+        }
+        @keyframes background-pan {
+            from {
+                background-position: 0%;
+            }
+            to {
+                background-position: 100%;
+            }
+        }
+        .container {
+            width: 80%;
+            margin: 50px auto;
+            overflow: hidden;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            color: #FF6B6B;
+            text-shadow: 2px 2px 4px #000000;
+        }
+        h2 {
+            font-size: 1.8em;
+            color: #4CAF50;
+        }
+        label,
+        input,
+        button,
+        select {
+            font-size: 1.2em;
+        }
+        .pet-details {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 2px solid #FFD700;
+            background-color: #FFF8DC;
+            border-radius: 10px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            display: none; /* Initially hidden */
+        }
+        .pet-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .back-button {
+            margin-top: 20px;
+            padding: 10px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .back-button:hover {
+            background-color: #2980b9;
+        }
+        #login-form,
+        #signup-form {
+            display: none;
+            width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #fff;
+        }
+        #login-form h2,
+        #signup-form h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #FF6B6B;
+        }
+        #login-form label,
+        #signup-form label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        input,
+        select {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 12px 20px;
+            background-color: #9b59b6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #8e44ad;
+        }
+        img {
+            border-radius: 10px;
+            max-width: 200px;
+            height: auto;
+        }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+        .success-message {
+            color: green;
+            margin-top: 10px;
+        }
+        .payment-options {
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        .payment-options h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .payment-method {
+            margin-bottom: 15px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .payment-method h3 {
+            color: #333;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .payment-method label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        .payment-method input {
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            width: calc(100% - 20px);
+            box-sizing: border-box;
+        }
+        .upi-options button {
+            width: auto;
+            margin-right: 10px;
+            padding: 10px 15px;
+            display: inline-block;
+        }
+        #credit-card-details,
+        #debit-card-details,
+        #upi-details {
+            display: none;
+        }
+        .user-details {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 1px solid #dee2e6;
+        }
+        .user-details h3 {
+            color: #495057;
+            margin-top: 0;
+        }
+        .show-pets-button {
+            margin: 10px 0;
+            background-color: #4CAF50;
+        }
+        .show-pets-button:hover {
+            background-color: #45a049;
+        }
+        #adoption-details-page label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        #adoption-details-page input[type="datetime-local"],
+        #adoption-details-page select {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 1.2em;
+        }
+        .adopt-button-container {
+            text-align: center;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page active" id="title-page">
+            <h1><b>Pet Management System</b></h1>
+            <div style="text-align:center;">
+                <button id="show-login">Login</button>
+                <button id="show-signup">Signup</button>
+            </div>
+        </div>
+        <div class="page" id="login-page">
+            <div id="login-form">
+                <h2>Login</h2>
+                <label for="login-username">Username:</label><br>
+                <input type="text" placeholder="Username" id="login-username"><br><br>
+                <label for="login-password">Password:</label><br>
+                <input type="password" placeholder="Password" id="login-password"><br><br>
+                <button id="login-button">Login</button>
+                <p id="login-error" class="error-message"></p>
+            </div>
+            <button class="back-button" id="back-to-title-from-login">Back</button>
+        </div>
+        <div class="page" id="signup-page">
+            <div id="signup-form">
+                <h2>Signup</h2>
+                <label for="signup-username">Username:</label><br>
+                <input type="text" placeholder="Username" id="signup-username"><br><br>
+                <label for="signup-name">Name:</label><br>
+                <input type="text" placeholder="Name" id="signup-name"><br><br>
+                <label for="signup-email">Email:</label><br>
+                <input type="email" placeholder="Email" id="signup-email"><br><br>
+                <label for="signup-phone">Phone Number:</label><br>
+                <input type="tel" placeholder="Phone Number" id="signup-phone"><br><br>
+                <label for="signup-state">State:</label><br>
+                <input type="text" placeholder="State" id="signup-state"><br><br>
+                <label for="signup-pincode">Pincode:</label><br>
+                <input type="text" placeholder="Pincode" id="signup-pincode"><br><br>
+                <label for="signup-password">Password:</label><br>
+                <input type="password" placeholder="Password" id="signup-password"><br><br>
+                <button id="signup-button">Signup</button>
+                <p id="signup-error" class="error-message"></p>
+                <p id="signup-success" class="success-message"></p>
+            </div>
+            <button class="back-button" id="back-to-title-from-signup">Back</button>
+        </div>
+        <div class="page" id="user-details-page">
+            <h1>Welcome <span id="welcome-username"></span>!</h1>
+            <div id="user-details-display" class="user-details">
+                <h3>Your Details</h3>
+                <p id="user-name"></p>
+                <p id="user-email"></p>
+                <p id="user-phone"></p>
+                <p id="user-state"></p>
+                <p id="user-pincode"></p>
+            </div>
+            <button id="show-available-pets" class="show-pets-button">Show Available Pets</button>
+            <button class="back-button" id="back-to-login-from-user">Back to Login</button>
+        </div>
+        <div class="page" id="available-pets">
+            <h1>Available Pets</h1>
+            <div class="pet-container">
+                <button id="show-dogs">Show Dogs</button>
+                <div class="pet-details" id="dog-details">
+                    <div class="pet-item">
+                        <img src="beagle.jpg" alt="Beagle" width="200">
+                        <h2>Beagle</h2>
+                        <p>Breed: Beagle</p>
+                        <p>Gender: Male</p>
+                        <p>Weight: 10-11 kg</p>
+                        <p>Price: $500</p>
+                        <div class="adopt-button-container">
+                            <button class="adopt-pet" data-breed="Beagle" data-gender="Male">Adopt Beagle</button>
+                        </div>
+                    </div>
+                    <div class="pet-item">
+                        <img src="german-shepherd.jpg" alt="German Shepherd" width="200">
+                        <h2>German Shepherd</h2>
+                        <p>Breed: German Shepherd</p>
+                        <p>Gender: Female</p>
+                        <p>Weight: 22-40 kg</p>
+                        <p>Price: $700</p>
+                        <div class="adopt-button-container">
+                            <button class="adopt-pet" data-breed="German Shepherd" data-gender="Female">Adopt German Shepherd</button>
+                        </div>
+                    </div>
+                    <div class="pet-item">
+                        <img src="Golden Retriever.jpg" alt="Golden Retriever" width="200">
+                        <h2>Golden Retriever</h2>
+                        <p>Breed: Golden Retriever</p>
+                        <p>Gender: Male</p>
+                        <p>Weight: 25-34 kg</p>
+                        <p>Price: $600</p>
+                        <div class="adopt-button-container">
+                            <button class="adopt-pet" data-breed="Golden Retriever" data-gender="Male">Adopt Golden Retriever</button>
+                        </div>
+                    </div>
+                </div>
+                <button id="show-cats" style="display:none;">Show Cats</button>
+                <div class="pet-details" id="cat-details">
+                    <div class="pet-item">
+                        <img src="cat.jpg" alt="Siamese" width="200">
+                        <h2>Siamese</h2>
+                        <p>Breed: Siamese</p>
+                        <p>Gender: Female</p>
+                        <p>Weight: 3-5 kg</p>
+                        <p>Price: $300</p>
+                        <div class="adopt-button-container">
+                            <button class="adopt-pet" data-breed="Siamese" data-gender="Female">Adopt Siamese</button>
+                        </div>
+                    </div>
+                    <div class="pet-item">
+                        <img src="persian.jpg" alt="Persian" width="200">
+                        <h2>Persian</h2>
+                        <p>Breed: Persian</p>
+                        <p>Gender: Male</p>
+                        <p>Weight: 3-5.5 kg</p>
+                        <p>Price: $400</p>
+                        <div class="adopt-button-container">
+                            <button class="adopt-pet" data-breed="Persian" data-gender="Male">Adopt Persian</button>
+                        </div>
+                    </div>
+                    <div class="pet-item">
+                        <img src="maine-coon.jpg" alt="Maine Coon" width="200">
+                        <h2>Maine Coon</h2>
+                        <p>Breed: Maine Coon</p>
+                        <p>Gender: Female</p>
+                        <p>Weight: 5-8 kg</p>
+                        <p>Price: $550</p>
+                        <div class="adopt-button-container">
+                            <button class="adopt-pet" data-breed="Maine Coon" data-gender="Female">Adopt Maine Coon</button>
+                        </div>
+                    </div>
+                </div>
+                <button id="show-birds" style="display:none;">Show Birds</button>
+                <div class="pet-details" id="bird-details">
+                    <div class="pet-item">
+                        <img src="parrot.jpg" alt="Parrot" width="200">
+                        <h2>Parrot</h2>
+                        <p>Breed: Parrot</p>
+                        <p>Gender: Male</p>
+                        <p>Weight: 0.5-1.5 kg</p>
+                        <p>Price: $100</p>
+                        <div class="adopt-button-container">
+                            <button class="adopt-pet" data-breed="Parrot" data-gender="Male">Adopt Parrot</button>
+                        </div>
+                    </div>
+                    <div class="pet-item">
+                        <img src="canary.jpg" alt="Canary" width="200">
+                        <h2>Canary</h2>
+                        <p>Breed: Canary</p>
+                        <p>Gender: Female</p>
+                        <p>Weight: 0.015-0.024 kg</p>
+                        <p>Price: $50</p>
+                        <div class="adopt-button-container">
+                            <button class="adopt-pet" data-breed="Canary" data-gender="Female">Adopt Canary</button>
+                        </div>
+                    </div>
+                    <div class="pet-item">
+                        <img src="finch.jpg" alt="Finch" width="200">
+                        <h2>Finch</h2>
+                        <p>Breed: Finch</p>
+                        <p>Gender: Male</p>
+                        <p>Weight: 0.014-0.023 kg</p>
+                        <p>Price: $40</p>
+                        <div class="adopt-button-container">
+                            <button class="adopt-pet" data-breed="Finch" data-gender="Male">Adopt Finch</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="back-button" id="back-to-user-from-pets">Back to User Details</button>
+        </div>
+        <div class="page" id="adoption-details-page">
+            <h1>Adoption Details</h1>
+            <form id="adoption-form">
+                <label for="pet-breed">Pet Breed:</label>
+                <input type="text" id="pet-breed" name="pet-breed" readonly><br><br>
+                <label for="pet-gender">Pet Gender:</label>
+                <input type="text" id="pet-gender" name="pet-gender" readonly><br><br>
+                <label for="adoption-date">Date:</label>
+                <input type="datetime-local" id="adoption-date" name="adoption-date" required><br><br>
+                <label for="adoption-time">Time:</label>
+                <input type="time" id="adoption-time" name="adoption-time" required><br><br>
+                <button type="button" id="preview-adoption">Preview Adoption</button>
+            </form>
+            <button class="back-button" id="back-to-pets-from-adoption">Back to Available Pets</button>
+        </div>
+        <div class="page" id="payment-page">
+            <h1>Payment Options</h1>
+            <div class="payment-options">
+                <h2>Select Payment Method</h2>
+                <div class="payment-method">
+                    <h3>Credit Card</h3>
+                    <label for="credit-card">Card Number:</label>
+                    <input type="text" id="credit-card" placeholder="Enter card number">
+                    <label for="credit-expiry">Expiry Date:</label>
+                    <input type="text" id="credit-expiry" placeholder="MM/YY">
+                    <label for="credit-cvv">CVV:</label>
+                    <input type="text" id="credit-cvv" placeholder="CVV">
+                    <button onclick="processPayment('Credit Card')">Pay with Credit Card</button>
+                </div>
+                <div class="payment-method">
+                    <h3>Debit Card</h3>
+                    <label for="debit-card">Card Number:</label>
+                    <input type="text" id="debit-card" placeholder="Enter card number">
+                    <label for="debit-expiry">Expiry Date:</label>
+                    <input type="text" id="debit-expiry" placeholder="MM/YY">
+                    <label for="debit-cvv">CVV:</label>
+                    <input type="text" id="debit-cvv" placeholder="CVV">
+                    <button onclick="processPayment('Debit Card')">Pay with Debit Card</button>
+                </div>
+                <div class="payment-method">
+                    <h3>UPI</h3>
+                    <div class="upi-options">
+                        <button onclick="processPayment('PhonePe')">PhonePe</button>
+                        <button onclick="processPayment('Google Pay')">Google Pay</button>
+                        <button onclick="processPayment('Paytm')">Paytm</button>
+                        <label for="upi-id">UPI ID:</label>
+                        <input type="text" id="upi-id" placeholder="Enter UPI ID">
+                        <button onclick="processPayment('UPI')">Pay with UPI</button>
+                    </div>
+                </div>
+            </div>
+            <button class="back-button" id="back-to-adoption-from-payment">Back to Adoption Details</button>
+        </div>
+        <div class="page" id="preview-page">
+            <h1>Adoption Preview</h1>
+            <div id="preview-details">
+                <h3>Pet Details:</h3>
+                <p>Breed: <span id="preview-breed"></span></p>
+                <p>Gender: <span id="preview-gender"></span></p>
+                <h3>Adoption Schedule:</h3>
+                <p>Date: <span id="preview-date"></span></p>
+                <p>Time: <span id="preview-time"></span></p>
+                <h3>User Details:</h3>
+                <p>Name: <span id="preview-user-name"></span></p>
+                <p>Email: <span id="preview-user-email"></span></p>
+                <p>Phone: <span id="preview-user-phone"></span></p>
+            </div>
+            <button id="confirm-adoption">Confirm Adoption and Proceed to Payment</button>
+            <button class="back-button" id="back-to-adoption-from-preview">Back to Adoption Details</button>
+        </div>
+    </div>
+    <script>
+        const pages = document.querySelectorAll('.page');
+        let currentPageId = 'title-page';
+        let isLoggedIn = false;
+        let selectedBreed = '';
+        let selectedGender = '';
+        let bookingDetails = {};
+        let userDetails = {};
+        let currentUsername = '';
+
+        function showPage(pageId) {
+            pages.forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            currentPageId = pageId;
+        }
+
+        // --- Title Page ---
+        document.getElementById('show-login').addEventListener('click', () => {
+            showPage('login-page');
+            document.getElementById('login-form').style.display = 'block';
+            document.getElementById('signup-form').style.display = 'none';
+        });
+
+        document.getElementById('show-signup').addEventListener('click', () => {
+            showPage('signup-page');
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('signup-form').style.display = 'block';
+        });
+
+        // --- Login Page ---
+        document.getElementById('login-button').addEventListener('click', () => {
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+
+            if (!localStorage.getItem(username)) {
+                document.getElementById('login-error').textContent = "Username not found. Please sign up.";
+                return;
+            }
+
+            const storedUser = JSON.parse(localStorage.getItem(username));
+            if (password !== storedUser.password) {
+                document.getElementById('login-error').textContent = "Incorrect password";
+                return;
+            }
+
+            isLoggedIn = true;
+            currentUsername = username;
+            userDetails = storedUser;
+
+            showUserDetails();
+        });
+
+        function showUserDetails() {
+            document.getElementById('welcome-username').textContent = currentUsername;
+            document.getElementById('user-name').textContent = `Name: ${userDetails.name}`;
+            document.getElementById('user-email').textContent = `Email: ${userDetails.email}`;
+            document.getElementById('user-phone').textContent = `Phone: ${userDetails.phone}`;
+            document.getElementById('user-state').textContent = `State: ${userDetails.state}`;
+            document.getElementById('user-pincode').textContent = `Pincode: ${userDetails.pincode}`;
+            showPage('user-details-page');
+        }
+
+        document.getElementById('back-to-title-from-login').addEventListener('click', () => {
+            showPage('title-page');
+        });
+
+        // --- Signup Page ---
+        document.getElementById('signup-button').addEventListener('click', () => {
+            const username = document.getElementById('signup-username').value;
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const phone = document.getElementById('signup-phone').value;
+            const state = document.getElementById('signup-state').value;
+            const pincode = document.getElementById('signup-pincode').value;
+            const password = document.getElementById('signup-password').value;
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                document.getElementById('signup-error').textContent = "Invalid email format";
+                return;
+            }
+
+            if (username.trim() === '' || name.trim() === '' || email.trim() === '' ||
+                phone.trim() === '' || state.trim() === '' || pincode.trim() === '' ||
+                password.trim() === '') {
+                document.getElementById('signup-error').textContent = "All fields are required";
+                return;
+            }
+
+            if (localStorage.getItem(username)) {
+                document.getElementById('signup-error').textContent = "Username already exists. Please choose another.";
+                return;
+            }
+
+            const nameRegex = /^[a-zA-Z\s]+$/;
+            if (!nameRegex.test(name)) {
+                document.getElementById('signup-error').textContent = "Name should contain only letters and spaces";
+                return;
+            }
+
+            const phoneRegex = /^\d{10}$/;
+            if (!phoneRegex.test(phone)) {
+                document.getElementById('signup-error').textContent = "Phone number should be 10 digits";
+                return;
+            }
+
+            const pincodeRegex = /^\d{6}$/;
+            if (!pincodeRegex.test(pincode)) {
+                document.getElementById('signup-error').textContent = "Pincode should be 6 digits";
+                return;
+            }
+
+            const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*[0-9]).{8,}$/;
+            if (!passwordRegex.test(password)) {
+                document.getElementById('signup-error').textContent = "Password must contain at least 8 characters, one capital letter, one special character, and one number";
+                return;
+            }
+
+            userDetails = {
+                username: username,
+                name: name,
+                email: email,
+                phone: phone,
+                state: state,
+                pincode: pincode,
+                password: password
+            };
+
+            localStorage.setItem(username, JSON.stringify(userDetails));
+
+            document.getElementById('signup-error').textContent = "";
+            document.getElementById('signup-success').textContent = "Signup successful! Please login.";
+
+            setTimeout(() => {
+                showPage('login-page');
+                document.getElementById('login-form').style.display = 'block';
+                document.getElementById('signup-form').style.display = 'none';
+                document.getElementById('login-username').value = username;
+                document.getElementById('signup-success').textContent = "";
+            }, 1500);
+        });
+
+        document.getElementById('back-to-title-from-signup').addEventListener('click', () => {
+            showPage('title-page');
+        });
+
+        // --- User Details Page ---
+        document.getElementById('show-available-pets').addEventListener('click', () => {
+            showPage('available-pets');
+            resetPetDisplay();
+        });
+
+        function resetPetDisplay() {
+            document.getElementById('dog-details').style.display = 'none';
+            document.getElementById('cat-details').style.display = 'none';
+            document.getElementById('bird-details').style.display = 'none';
+            document.getElementById('show-cats').style.display = 'none';
+            document.getElementById('show-birds').style.display = 'none';
+            document.getElementById('show-dogs').style.display = 'block';
+        }
+
+        document.getElementById('back-to-login-from-user').addEventListener('click', () => {
+            showPage('login-page');
+        });
+
+        // --- Available Pets Page ---
+        document.getElementById('show-dogs').addEventListener('click', () => {
+            document.getElementById('dog-details').style.display = 'block';
+            document.getElementById('show-dogs').style.display = 'none';
+            document.getElementById('show-cats').style.display = 'block';
+            document.getElementById('cat-details').style.display = 'none';
+            document.getElementById('bird-details').style.display = 'none';
+            document.getElementById('show-birds').style.display = 'none';
+        });
+
+        document.getElementById('show-cats').addEventListener('click', () => {
+            document.getElementById('cat-details').style.display = 'block';
+            document.getElementById('show-cats').style.display = 'none';
+            document.getElementById('show-dogs').style.display = 'block';
+            document.getElementById('dog-details').style.display = 'none';
+            document.getElementById('show-birds').style.display = 'block';
+            document.getElementById('bird-details').style.display = 'none';
+        });
+
+        document.getElementById('show-birds').addEventListener('click', () => {
+            document.getElementById('bird-details').style.display = 'block';
+            document.getElementById('show-birds').style.display = 'none';
+            document.getElementById('show-dogs').style.display = 'block';
+            document.getElementById('dog-details').style.display = 'none';
+            document.getElementById('show-cats').style.display = 'block';
+            document.getElementById('cat-details').style.display = 'none';
+        });
+
+        document.querySelectorAll('.adopt-pet').forEach(button => {
+            button.addEventListener('click', function() {
+                selectedBreed = this.dataset.breed;
+                selectedGender = this.dataset.gender;
+                document.getElementById('pet-breed').value = selectedBreed;
+                document.getElementById('pet-gender').value = selectedGender;
+                showPage('adoption-details-page');
+            });
+        });
+
+        document.getElementById('back-to-user-from-pets').addEventListener('click', () => {
+            showPage('user-details-page');
+            resetPetDisplay();
+        });
+
+        // --- Adoption Details Page ---
+        document.getElementById('preview-adoption').addEventListener('click', () => {
+            const adoptionDate = document.getElementById('adoption-date').value;
+            const adoptionTime = document.getElementById('adoption-time').value;
+
+            if (!adoptionDate || !adoptionTime) {
+                alert('Please select the date and time for adoption.');
+                return;
+            }
+
+            document.getElementById('preview-breed').textContent = selectedBreed;
+            document.getElementById('preview-gender').textContent = selectedGender;
+            document.getElementById('preview-date').textContent = new Date(adoptionDate).toLocaleDateString();
+            document.getElementById('preview-time').textContent = adoptionTime;
+            document.getElementById('preview-user-name').textContent = userDetails.name;
+            document.getElementById('preview-user-email').textContent = userDetails.email;
+            document.getElementById('preview-user-phone').textContent = userDetails.phone;
+
+            showPage('preview-page');
+        });
+
+        document.getElementById('back-to-pets-from-adoption').addEventListener('click', () => {
+            showPage('available-pets');
+        });
+
+        // --- Preview Page ---
+        document.getElementById('confirm-adoption').addEventListener('click', () => {
+            showPage('payment-page');
+        });
+
+        document.getElementById('back-to-adoption-from-preview').addEventListener('click', () => {
+            showPage('adoption-details-page');
+        });
+
+        // --- Payment Page ---
+        function processPayment(method) {
+            alert(`Payment processed via ${method}! Thank you for your adoption.`);
+            // In a real application, you would send payment details to a server
+            // and handle the transaction. After successful payment, you might
+            // redirect to a confirmation page or update the UI.
+            showPage('user-details-page'); // Redirect back to user details after "payment"
+        }
+
+        document.getElementById('back-to-adoption-from-payment').addEventListener('click', () => {
+            showPage('adoption-details-page');
+        });
+
+        // Initially show the title page
+        showPage('title-page');
+    </script>
+</body>
+</html>
