@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pet Management System</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f8ff;
+    }
+    .navbar {
+      background: #ff4500;
+      padding: 15px;
+      text-align: center;
+    }
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+      margin: 0 15px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px;
+    }
+    .title-page {
+      text-align: center;
+      padding: 50px;
+      background: linear-gradient(to right, #ffecd2, #fcb69f);
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .title-page img {
+      width: 150px;
+      margin: 10px;
+    }
+    .box {
+      background: white;
+      padding: 20px;
+      max-width: 400px;
+      margin: 50px auto;
+      border-radius: 10px;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .button {
+      background: #ff4500;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      display: block;
+      margin: 10px auto;
+    }
+    .button:hover {
+      background: #e63e00;
+    }
+    .pet-list {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .pet-card {
+      width: 250px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+      text-align: center;
+      padding: 15px;
+    }
+    .pet-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <a href="#" onclick="showLoginPage()">Login</a>
+    <a href="#" onclick="showSignupPage()">Sign Up</a>
+  </div>
+
+  <div class="title-page">
+    <h1>PET MANAGEMENT SYSTEM</h1>
+    <img src="beagle.jpg" alt="Beagle">
+    <img src="cat.jpg" alt="Cat">
+    <img src="parrot.jpg" alt="Parrot">
+  </div>
+
+  <div class="box" id="loginPage" style="display: none;">
+    <h2>Login</h2>
+    <input type="text" placeholder="Username">
+    <input type="password" placeholder="Password">
+    <button class="button" onclick="showPetPage()">Login</button>
+  </div>
+
+  <div class="box" id="signupPage" style="display: none;">
+    <h2>Sign Up</h2>
+    <input type="text" placeholder="Name">
+    <input type="email" placeholder="Email">
+    <input type="text" placeholder="Phone Number">
+    <input type="text" placeholder="State">
+    <input type="text" placeholder="Pincode">
+    <button class="button" onclick="showLoginPage()">Sign Up</button>
+  </div>
+
+  <div class="container" id="petPage" style="display: none;">
+    <h2>Available Pets</h2>
+    <div class="pet-list">
+      <div class="pet-card" onclick="showBreeds('dog')">
+        <img src="beagle.jpg" alt="Dog">
+        <h3>Dogs</h3>
+      </div>
+      <div class="pet-card" onclick="showBreeds('cat')">
+        <img src="cat.jpg" alt="Cat">
+        <h3>Cats</h3>
+      </div>
+      <div class="pet-card" onclick="showBreeds('bird')">
+        <img src="parrot.jpg" alt="Bird">
+        <h3>Birds</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="container" id="breedPage" style="display: none;"></div>
+
+  <div class="box" id="appointmentPage" style="display: none;">
+    <h2>Book an Appointment</h2>
+    <select id="petType">
+      <option value="dog">Dog</option>
+      <option value="cat">Cat</option>
+      <option value="bird">Bird</option>
+    </select>
+    <select id="petGender">
+      <option value="male">Male</option>
+      <option value="female">Female</option>
+    </select>
+    <input type="date" id="appointmentDate">
+    <input type="time" id="appointmentTime">
+    <button class="button" onclick="confirmAppointment()">Book Appointment</button>
+  </div>
+
+  <div class="container" id="confirmationPage" style="display: none;">
+    <h2>Appointment Confirmed!</h2>
+    <p id="appointmentDetails"></p>
+  </div>
+
+  <script>
+    function showLoginPage() {
+      document.getElementById('loginPage').style.display = 'block';
+      document.getElementById('signupPage').style.display = 'none';
+    }
+
+    function showSignupPage() {
+      document.getElementById('signupPage').style.display = 'block';
+      document.getElementById('loginPage').style.display = 'none';
+    }
+
+    function showPetPage() {
+      document.getElementById('loginPage').style.display = 'none';
+      document.getElementById('signupPage').style.display = 'none';
+      document.getElementById('petPage').style.display = 'block';
+    }
+
+    function showBreeds(type) {
+      let breeds = {
+        'dog': ["Beagle - 25kg - ₹30,000", "Labrador - 30kg - ₹40,000", "German Shepherd - 35kg - ₹50,000", "Golden Retriever - 32kg - ₹45,000"],
+        'cat': ["Persian - 5kg - ₹10,000", "Maine Coon - 7kg - ₹15,000", "Siamese - 6kg - ₹12,000", "Bengal - 8kg - ₹18,000"],
+        'bird': ["Parrot - 1kg - ₹5,000", "Cockatiel - 1.5kg - ₹6,000", "Macaw - 2kg - ₹15,000", "Canary - 0.8kg - ₹3,500"]
+      };
+      let breedPage = document.getElementById('breedPage');
+      breedPage.innerHTML = `<h2>${type.charAt(0).toUpperCase() + type.slice(1)} Breeds</h2>`;
+      breeds[type].forEach(breed => {
+        breedPage.innerHTML += `<p>${breed}</p>`;
+      });
+      breedPage.innerHTML += `<button class="button" onclick="showAppointmentPage()">Adopt</button>`;
+      breedPage.style.display = 'block';
+    }
+
+    function showAppointmentPage() {
+      document.getElementById('appointmentPage').style.display = 'block';
+    }
+
+    function confirmAppointment() {
+      let type = document.getElementById("petType").value;
+      let gender = document.getElementById("petGender").value;
+      let date = document.getElementById("appointmentDate").value;
+      let time = document.getElementById("appointmentTime").value;
+      document.getElementById("appointmentDetails").innerText = `You have booked a ${gender} ${type} for adoption on ${date} at ${time}.`;
+      document.getElementById("confirmationPage").style.display = 'block';
+    }
+  </script>
+</body>
+</html>
