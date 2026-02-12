@@ -1,12 +1,7 @@
-# React + Vite
+--PET MANAGEMENT SYSTEM
+--The Pet management System is a web-based application to manage and adopt pet services.
+--It provides login and signup functionality for secure user access.
+--Users can schedule appointmemts for services and adoption fees.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+--SCREENSHOTS
+<img width="1898" height="842" alt="image" src="https://github.com/user-attachments/assets/52362e3c-a9a2-46a1-bcca-d5b76c0c6191" />
